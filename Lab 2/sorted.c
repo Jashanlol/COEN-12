@@ -17,7 +17,7 @@
 # include <stdbool.h>
 # include <assert.h>
 
-static int search(SET *sp, char *elt, bool *found);
+static int bsearch(SET *sp, char *elt, bool *found);
 
 typedef struct set
 {
@@ -52,11 +52,13 @@ int numElements(SET *sp)
 {
     return (sp->count); 
 }
-
+//***********************************************FINISH AND TEST EVERYTHING
 void addElement(SET *sp, char *elt)
 {
     bool *found = NULL;
-    if(search(sp, elt, found) == -1)
+    int index = bsearch(sp, elt, &found);
+
+    if(bsearch(sp, elt, found) == -1)
     {
         if(sp->count == sp->length)
         {
@@ -74,11 +76,15 @@ void removeElement(SET *sp, char *elt)
     assert(sp != NULL);
     assert(elt != NULL);
     bool found = NULL;
-    int index = search(sp, elt, &found);
+    int i;
+    int index = bsearch(sp, elt, &found);
     if(index == -1)
         return; 
-    sp->data[index] = sp->data[sp->count-1];
-    sp->data[sp->count-1] = NULL;
+    for(i = index; i < sp->count - 1; i++)
+    {
+        sp->data[i] = sp->data[i + 1];
+    }
+    sp->data[sp->count] = NULL;
     sp->count -= 1;
     return; 
 }
@@ -86,7 +92,7 @@ void removeElement(SET *sp, char *elt)
 char *findElement(SET *sp, char *elt)
 {
     bool *found = NULL;
-    int temp = search(sp, elt, found);
+    int temp = bsearch(sp, elt, found);
     if(temp != -1)
         return sp->data[temp];
     return NULL;
@@ -101,14 +107,22 @@ char **getElements(SET *sp)
     return copy;
 }
 
-static int search(SET *sp, char *elt, bool *found)
+static int bsearch(SET *sp, char *elt, bool *found)
 {
-    int i;
+    int mid;
+    int low = 0;
+    int high = sp->count;
     found = false;
-    for(i = 0; i < sp->count; i++)
+    while(low <= high)
     {
-        if(strcmp(elt, sp->data[i]) == 0)
-            return i;
+        mid = low + ((high - low) / 2);
+        
+        if(strcmp(elt, sp->data[mid]) < 0)
+            high = mid - 1;
+        if(strcmp(elt, sp->data[mid]) > 0)
+            low = mid + 1;
+        if(strcmp(elt, sp->data[mid]) == 0)
+            return mid;
     }
     return -1;
 }
