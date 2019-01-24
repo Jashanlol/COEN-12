@@ -9,6 +9,7 @@
 # include <string.h>
 # include "set.h"
 # include <stdbool.h>
+# include <assert.h>
 
 static int search(SET *sp, char *elt, bool *found);
 
@@ -22,11 +23,11 @@ typedef struct set
 SET *createSet(int maxElts)
 {
     SET *sp;
-    sp = mallocc(sizeof(SET));
+    sp = malloc(sizeof(SET));
     assert(sp != NULL);
     sp -> count = 0;
     sp -> length = maxElts;
-    sp -> data = (char**)malloc(sizeof(char *)*maxElts);
+    sp -> data = malloc(sizeof(char *)*maxElts);
     assert(sp->data != NULL);
     return sp;
 }
@@ -43,13 +44,12 @@ void destroySet(SET *sp)
 
 int numElements(SET *sp)
 {
-    assert(sp != NULL);
     return (sp->count); 
 }
 
 void addElement(SET *sp, char *elt)
 {
-    bool *found;
+    bool *found = NULL;
     if(search(sp, elt, found) == -1)
     {
         if(sp->count == sp->length)
@@ -57,7 +57,7 @@ void addElement(SET *sp, char *elt)
             printf("Array is currently full.");
             return;
         }
-        sp ->data[sp->count] = strup(elt);
+        sp ->data[sp->count] = strdup(elt);
         sp->count += 1;
     }
     return;
@@ -68,25 +68,29 @@ void removeElement(SET *sp, char *elt)
     assert(sp != NULL);
     assert(elt != NULL);
     free(elt);
-    sp->count =- 1;
+    bool *found = NULL;
+    int index = search(sp, elt, found);
+    if(index == -1)
+        return; 
+    free(sp->data[index]);
+    sp->data[index] = sp->data[sp->count];
+    sp->count -= 1;
     return; 
 }
 
 char *findElement(SET *sp, char *elt)
 {
-    bool *found;
-    char *temp = search(sp, elt, found);
+    bool *found = NULL;
+    int temp = search(sp, elt, found);
     if(temp != -1)
-        return sp->count[temp];
+        return sp->data[temp];
     return NULL;
 }
-
 
 char **getElements(SET *sp)
 {
     int i;
-    char **copy;
-    copy = (char **)mallocc(sizeof(sp->data));
+    char **copy = malloc(sizeof(sp->data));
     for(i = 0; i < sp->count; i++)
         copy[i] = sp->data[i];
     return copy;
@@ -99,10 +103,7 @@ static int search(SET *sp, char *elt, bool *found)
     for(i = 0; i < sp->count; i++)
     {
         if(strcmp(elt, sp->data[i]) == 0)
-        {
-            found = true;
             return i;
-        }
     }
     return -1;
 }
