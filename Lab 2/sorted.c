@@ -4,12 +4,6 @@
  *  Description: 
  */
 
-/*
- *  Spencer Goles   14 January 2019    COEN 12
- *  File: unsorted.c      Project: Lab 2
- *  Description: 
- */
-
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -17,7 +11,7 @@
 # include <stdbool.h>
 # include <assert.h>
 
-static int bsearch(SET *sp, char *elt, bool *found);
+static int search(SET *sp, char *elt, bool *found);
 
 typedef struct set
 {
@@ -50,49 +44,59 @@ void destroySet(SET *sp)
 
 int numElements(SET *sp)
 {
+    assert(sp != NULL);
     return (sp->count); 
 }
+
 //***********************************************FINISH AND TEST EVERYTHING
 void addElement(SET *sp, char *elt)
 {
-    bool *found = NULL;
-    int index = bsearch(sp, elt, &found);
+    assert(sp != NULL);
+    int i;
+    bool found = NULL;
+    int index = search(sp, elt, &found);
 
-    if(bsearch(sp, elt, found) == -1)
+    if(found == true) return; 
+
+    if(sp->count == sp->length)
     {
-        if(sp->count == sp->length)
-        {
-            printf("Array is currently full.");
-            return;
-        }
-        sp ->data[sp->count] = strdup(elt);
-        sp->count += 1;
+        printf("Array is currently full.");
+        return;
     }
+    
+    for(i = sp->count; i > index; i--)
+    {
+        sp->data[i] = sp->data[i - 1];
+    }
+    sp ->data[index] = strdup(elt);
+    sp->count += 1;
     return;
 }
 
 void removeElement(SET *sp, char *elt)
 {
-    assert(sp != NULL);
-    assert(elt != NULL);
+    assert(sp != NULL && elt != NULL);
     bool found = NULL;
     int i;
-    int index = bsearch(sp, elt, &found);
-    if(index == -1)
-        return; 
-    for(i = index; i < sp->count - 1; i++)
+    int index = search(sp, elt, &found);
+
+    if(found == true)
     {
-        sp->data[i] = sp->data[i + 1];
+        sp->data[index] = NULL;
+        for(i = index; i < sp->count - 1; i++)
+        {
+             sp->data[i] = sp->data[i + 1];
+        }
+        
+        sp->count -= 1;
     }
-    sp->data[sp->count] = NULL;
-    sp->count -= 1;
     return; 
 }
 
 char *findElement(SET *sp, char *elt)
 {
-    bool *found = NULL;
-    int temp = bsearch(sp, elt, found);
+    bool found = NULL;
+    int temp = search(sp, elt, &found);
     if(temp != -1)
         return sp->data[temp];
     return NULL;
@@ -107,12 +111,11 @@ char **getElements(SET *sp)
     return copy;
 }
 
-static int bsearch(SET *sp, char *elt, bool *found)
+static int search(SET *sp, char *elt, bool *found)
 {
     int mid;
     int low = 0;
     int high = sp->count;
-    found = false;
     while(low <= high)
     {
         mid = low + ((high - low) / 2);
@@ -122,8 +125,10 @@ static int bsearch(SET *sp, char *elt, bool *found)
         if(strcmp(elt, sp->data[mid]) > 0)
             low = mid + 1;
         if(strcmp(elt, sp->data[mid]) == 0)
+            *found = true;
             return mid;
     }
-    return -1;
+    *found = false; 
+    return low; 
 }
 
