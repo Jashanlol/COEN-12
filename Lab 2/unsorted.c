@@ -67,13 +67,12 @@ void removeElement(SET *sp, char *elt)
 {
     assert(sp != NULL);
     assert(elt != NULL);
-    free(elt);
-    bool *found = NULL;
-    int index = search(sp, elt, found);
+    bool found = NULL;
+    int index = search(sp, elt, &found);
     if(index == -1)
         return; 
-    free(sp->data[index]);
-    sp->data[index] = sp->data[sp->count];
+    sp->data[index] = sp->data[sp->count-1];
+    sp->data[sp->count-1] = NULL;
     sp->count -= 1;
     return; 
 }
