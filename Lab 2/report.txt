@@ -1,0 +1,71 @@
+Report of Lab 2 Runtimes:
+---------------------------------------------
+Unsorted:
+
+	Macbeth.txt:
+		Unique:
+		real	0m0.118s
+		user	0m0.112s
+		sys	0m0.005s
+
+		Parity:
+		real	0m0.341s
+		user	0m0.332s
+		sys	0m0.006s
+
+	Bible.txt:
+		Unique:
+		real	0m5.255s
+		user	0m5.170s
+		sys	0m0.012s		
+
+		Parity:
+		real	1m0.744s
+		user	1m0.611s
+		sys	0m0.079s	
+	
+	TreasueIsland.txt:
+		Unique:
+		real	0m0.416s
+		user	0m0.395s
+		sys	0m0.006s
+
+		Parity:
+		real	0m2.258s
+		user	0m2.231s
+		sys	0m0.010s
+Sorted:
+	Macbeth.txt:
+		Unique:
+		real	0m0.008s
+		user	0m0.001s
+		sys	0m0.002s
+
+		Parity:
+		real	0m0.004s
+		user	0m0.000s
+		sys	0m0.001s
+		
+	Bible.txt:
+		Unique:
+		real	0m0.513s
+		user	0m0.494s
+		sys	0m0.006s
+
+
+		Parity:
+		real	0m9.951s
+		user	0m9.910s
+		sys	0m0.018s
+
+	
+	TreasueIsland.txt:
+		Unique:
+		real	0m0.082s
+		user	0m0.067s
+		sys	0m0.003s
+
+		Parity:
+		real	0m0.435s
+		user	0m0.418s
+		sys	0m0.003s
