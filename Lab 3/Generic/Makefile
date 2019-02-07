@@ -1,7 +1,7 @@
 CC	= gcc
 CFLAGS	= -g -Wall
 LDFLAGS	=
-PROGS	= unique parity
+PROGS	= unique parity counts
 
 all:	$(PROGS)
 
@@ -12,3 +12,6 @@ unique:	unique.o table.o
 
 parity:	parity.o table.o
 	$(CC) -o $@ $(LDFLAGS) parity.o table.o
+
+counts:	counts.o table.o
+	$(CC) -o $@ $(LDFLAGS) counts.o table.o

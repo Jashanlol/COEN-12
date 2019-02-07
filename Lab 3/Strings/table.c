@@ -1,6 +1,6 @@
 /*
 *   Spencer Goles   COEN 12     30 January 2019
-*   Description: 
+*   Description: Strings
 */
 
 # include <stdio.h>

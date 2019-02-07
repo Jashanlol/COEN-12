@@ -1,6 +1,6 @@
 /*
 *   Spencer Goles   COEN 12     30 January 2019
-*   Description: Generic
+*   Description: Strings
 */
 
 # include <stdio.h>
@@ -25,8 +25,7 @@ typedef struct set
     int *flags;
 } SET;
 
-
-SET *createSet(int maxElts)
+SET *createSet(int maxElts, int (*compare)(), unsigned (*hash)())
 {
     int i;
     SET *sp;
@@ -95,18 +94,18 @@ void removeElement(SET *sp, char *elt)
     return;
 }
 
-char *findElement(SET *sp, char *elt)
+void *findElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
     bool found = false;
     int index = search(sp, elt, &found);
     if(found == true)
         return (sp->data[index]);
-    return NULL;
+    return;
 
 }
 
-char **getElements(SET *sp)
+void *getElements(SET *sp)
 {
     assert(sp != NULL);
     char ** copy = malloc(sizeof(char *)* sp->count);
@@ -121,7 +120,7 @@ char **getElements(SET *sp)
             j++;
         }
     }
-    return copy; 
+    return; 
 }
 
 unsigned strhash(char *s)
@@ -137,36 +136,35 @@ static int search(SET *sp, char *elt, bool *found)
     assert(sp != NULL);
     assert(elt != NULL);
     int i, pos;
-    int rem;
-    int first = 0;
+    int first = -1;
     *found = false;
     unsigned key = strhash(elt);
 
     for(i = 0; i < sp->length; i++)
     {
-        pos = (key + 1) % (sp->length);
+        pos = (key + i) % (sp->length);
 
         if(sp->flags[pos] == FILLED)
         {
             if(strcmp(elt, sp->data[pos]) == 0)
             {
                  *found = true;
-                 return pos;
+                 return (pos);
             }
         }
         if(sp->flags[pos] == DELETED)
         {
-            rem = pos;
-            first = 1;
+            first = pos;
         }
         if(sp->flags[pos] == EMPTY)
         {
-            *found = false;
-            if(first == 1)
-                return rem;
+            if(first > -1)
+            {
+                return first;
+            }
             return pos;
         }
     }
-    *found = false;
     return -1;
 }
+
