@@ -131,7 +131,7 @@ unsigned strhash(char *s)
         hash = 31 * hash + *s ++;
     return hash;
 }
-
+/*
 static int search(SET *sp, char *elt, bool *found)
 {
     assert(sp != NULL);
@@ -164,6 +164,41 @@ static int search(SET *sp, char *elt, bool *found)
                 return first;
             }
             return pos;
+        }
+    }
+    return -1;
+}
+*/
+static int search(SET *sp, char *elt, bool *found)//binary search function - array is alphabetically sorted -- 
+{
+    assert(sp!=NULL);
+    int position; //variable used for hash f()
+    unsigned key = strhash(elt);//initializes key variable from returned hash f() value
+    int firstdelete=0;
+    int mem;
+    *found = false;
+    for(int i=0; i<sp->length; i++)
+    {
+        position = (key+i)%(sp->length);//linear probing
+        if(sp->flags[position]==FILLED)
+            if(strcmp(elt, sp->data[position])==0)//if key is found in filled position | else is not found
+            {
+                *found = true;
+                return(position);
+            }
+        if(sp->flags[position]==DELETED)
+            if(firstdelete==0)
+            {
+                mem = position;
+                firstdelete = 1;
+            }
+        if(sp->flags[position]==EMPTY)
+        {
+            if(firstdelete==1)
+            {
+                return(mem);
+            }
+            return(position);
         }
     }
     return -1;
