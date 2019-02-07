@@ -65,7 +65,23 @@ int numElements(SET *sp)
     return (sp->count);
 }
 
+void addElement(SET *sp, char *elt)//adds element -- 
+{
+    assert(sp != NULL);
+    assert(elt != NULL);
+    if(sp->count == sp->length)
+        return;
+    bool f = false;
+    int i = search(sp, elt, &f);//finds index to add element
+    if(f==true || i==-1)//if it already exists -- don't add it 
+        return;
+    sp->data[i] = strdup(elt);
+    sp->count++;
+    sp->flags[i] = FILLED;
+    return;// end function
+}
 
+/*
 void addElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
@@ -80,7 +96,7 @@ void addElement(SET *sp, char *elt)
     sp->count++;
     return;
 }
-
+*/
 void removeElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
