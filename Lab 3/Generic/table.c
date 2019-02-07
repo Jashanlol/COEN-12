@@ -14,8 +14,7 @@
 #define FILLED 2
 #define DELETED 3
 
-unsigned strhash(char *s);
-static int search(SET *sp, char *elt, bool *found);
+static int search(SET *sp, void *elt, bool *found);
 
 typedef struct set
 {
@@ -35,7 +34,7 @@ SET *createSet(int maxElts, int (*compare)(), unsigned (*hash)())
     assert(sp != NULL);
     sp->count = 0;
     sp->length = maxElts;
-    sp->data = (char **)malloc(sizeof(void*)*maxElts);
+    sp->data = (void **)malloc(sizeof(void*)*maxElts);
     assert(sp->data != NULL);
     sp->flags = malloc(sizeof(int*)*maxElts);
     assert(sp->flags != NULL);
@@ -69,7 +68,7 @@ int numElements(SET *sp)
     return (sp->count);
 }
 
-void addElement(SET *sp, char *elt)
+void addElement(SET *sp, void *elt)
 {
     assert(sp != NULL && elt != NULL);
     if (sp->count == sp->length) return;
@@ -84,7 +83,7 @@ void addElement(SET *sp, char *elt)
     return;
 }
 
-void removeElement(SET *sp, char *elt)
+void removeElement(SET *sp, void *elt)
 {
     assert(sp != NULL && elt != NULL);
     bool found = false;
@@ -98,7 +97,7 @@ void removeElement(SET *sp, char *elt)
     return;
 }
 
-void *findElement(SET *sp, char *elt)
+void *findElement(SET *sp, void *elt)
 {
     assert(sp != NULL && elt != NULL);
     bool found = false;
@@ -119,29 +118,21 @@ void *getElements(SET *sp)
     {
         if(sp->flags[i] == FILLED)
         {
-            memcpy(copy[j],sp->data[i], sizeof(void*)*sp->count);
+            copy[j] = sp->data[i];
             j++;
         }
     }
     return copy; 
 }
 
-unsigned strhash(char *s)
-{
-    unsigned hash = 0;
-    while(*s != '\0')
-        hash = 31 * hash + *s ++;
-    return hash;
-}
-
-static int search(SET *sp, char *elt, bool *found)
+static int search(SET *sp, void *elt, bool *found)
 {
     assert(sp != NULL);
     assert(elt != NULL);
     int i, pos;
     int first = -1;
     *found = false;
-    unsigned key = strhash(elt);
+    unsigned key = sp->hash(elt);
 
     for(i = 0; i < sp->length; i++)
     {
