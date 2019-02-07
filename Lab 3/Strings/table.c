@@ -65,23 +65,6 @@ int numElements(SET *sp)
     return (sp->count);
 }
 
-void addElement(SET *sp, char *elt)//adds element -- 
-{
-    assert(sp != NULL);
-    assert(elt != NULL);
-    if(sp->count == sp->length)
-        return;
-    bool f = false;
-    int i = search(sp, elt, &f);//finds index to add element
-    if(f==true || i==-1)//if it already exists -- don't add it 
-        return;
-    sp->data[i] = strdup(elt);
-    sp->count++;
-    sp->flags[i] = FILLED;
-    return;// end function
-}
-
-/*
 void addElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
@@ -96,7 +79,7 @@ void addElement(SET *sp, char *elt)
     sp->count++;
     return;
 }
-*/
+
 void removeElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
@@ -147,7 +130,7 @@ unsigned strhash(char *s)
         hash = 31 * hash + *s ++;
     return hash;
 }
-/*
+
 static int search(SET *sp, char *elt, bool *found)
 {
     assert(sp != NULL);
@@ -159,7 +142,7 @@ static int search(SET *sp, char *elt, bool *found)
 
     for(i = 0; i < sp->length; i++)
     {
-        pos = (key + 1) % (sp->length);
+        pos = (key + i) % (sp->length);
 
         if(sp->flags[pos] == FILLED)
         {
@@ -184,38 +167,4 @@ static int search(SET *sp, char *elt, bool *found)
     }
     return -1;
 }
-*/
-static int search(SET *sp, char *elt, bool *found)//binary search function - array is alphabetically sorted -- 
-{
-    assert(sp!=NULL);
-    int position; //variable used for hash f()
-    unsigned key = strhash(elt);//initializes key variable from returned hash f() value
-    int firstdelete=0;
-    int mem;
-    *found = false;
-    for(int i=0; i<sp->length; i++)
-    {
-        position = (key+i)%(sp->length);//linear probing
-        if(sp->flags[position]==FILLED)
-            if(strcmp(elt, sp->data[position])==0)//if key is found in filled position | else is not found
-            {
-                *found = true;
-                return(position);
-            }
-        if(sp->flags[position]==DELETED)
-            if(firstdelete==0)
-            {
-                mem = position;
-                firstdelete = 1;
-            }
-        if(sp->flags[position]==EMPTY)
-        {
-            if(firstdelete==1)
-            {
-                return(mem);
-            }
-            return(position);
-        }
-    }
-    return -1;
-}
+
