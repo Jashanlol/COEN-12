@@ -25,7 +25,6 @@ typedef struct set
     int *flags;
 } SET;
 
-
 SET *createSet(int maxElts)
 {
     int i;
@@ -65,6 +64,7 @@ int numElements(SET *sp)
     assert(sp != NULL);
     return (sp->count);
 }
+
 
 void addElement(SET *sp, char *elt)
 {
@@ -137,8 +137,7 @@ static int search(SET *sp, char *elt, bool *found)
     assert(sp != NULL);
     assert(elt != NULL);
     int i, pos;
-    int rem;
-    int first = 0;
+    int first = -1;
     *found = false;
     unsigned key = strhash(elt);
 
@@ -151,22 +150,21 @@ static int search(SET *sp, char *elt, bool *found)
             if(strcmp(elt, sp->data[pos]) == 0)
             {
                  *found = true;
-                 return pos;
+                 return (pos);
             }
         }
         if(sp->flags[pos] == DELETED)
         {
-            rem = pos;
-            first = 1;
+            first = pos;
         }
         if(sp->flags[pos] == EMPTY)
         {
-            *found = false;
-            if(first == 1)
-                return rem;
+            if(first > -1)
+            {
+                return first;
+            }
             return pos;
         }
     }
-    *found = false;
     return -1;
 }
