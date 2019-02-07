@@ -21,8 +21,10 @@ typedef struct set
 {
     int count;
     int length;
-    char ** data;
+    void ** data;
     int *flags;
+    int (*compare) ();
+    unsigned (*hash) ();
 } SET;
 
 SET *createSet(int maxElts, int (*compare)(), unsigned (*hash)())
@@ -33,7 +35,7 @@ SET *createSet(int maxElts, int (*compare)(), unsigned (*hash)())
     assert(sp != NULL);
     sp->count = 0;
     sp->length = maxElts;
-    sp->data = (char **)malloc(sizeof(char*)*maxElts);
+    sp->data = (char **)malloc(sizeof(void*)*maxElts);
     assert(sp->data != NULL);
     sp->flags = malloc(sizeof(int*)*maxElts);
     assert(sp->flags != NULL);
@@ -41,6 +43,8 @@ SET *createSet(int maxElts, int (*compare)(), unsigned (*hash)())
     {
         sp->flags[i] = EMPTY;
     }
+    sp->compare = compare;
+    sp->hash = hash;
     return sp;
 }
 
@@ -101,14 +105,13 @@ void *findElement(SET *sp, char *elt)
     int index = search(sp, elt, &found);
     if(found == true)
         return (sp->data[index]);
-    return;
-
+    return NULL;
 }
 
 void *getElements(SET *sp)
 {
     assert(sp != NULL);
-    char ** copy = malloc(sizeof(char *)* sp->count);
+    void ** copy = malloc(sizeof(void *)* sp->count);
     assert(copy != NULL);
     int i, j;
     j = 0;
@@ -116,11 +119,11 @@ void *getElements(SET *sp)
     {
         if(sp->flags[i] == FILLED)
         {
-            memcpy(copy[j],sp->data[i], sizeof(char*)*sp->count);
+            memcpy(copy[j],sp->data[i], sizeof(void*)*sp->count);
             j++;
         }
     }
-    return; 
+    return copy; 
 }
 
 unsigned strhash(char *s)
@@ -146,7 +149,7 @@ static int search(SET *sp, char *elt, bool *found)
 
         if(sp->flags[pos] == FILLED)
         {
-            if(strcmp(elt, sp->data[pos]) == 0)
+            if((*sp->compare) (elt, sp->data[pos]) == 0)
             {
                  *found = true;
                  return (pos);
