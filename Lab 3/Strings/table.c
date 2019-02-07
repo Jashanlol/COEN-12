@@ -51,7 +51,7 @@ void destroySet(SET *sp)
     int i;
     for(i = 0; i < sp->count; i++)
     {
-        if(sp->flags[i] != DELETED)
+        if(sp->flags[i] == FILLED)
             free(sp->data[i]);
     }
     free(sp->data);
@@ -70,10 +70,10 @@ void addElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
     if (sp->count == sp->length) return;
-    bool found;
+    bool found = false;
     int index = search(sp, elt, &found);
 
-    if(found == true) return;
+    if(found == true || index == -1) return;
 
     sp->data[index] = strdup(elt);
     sp->flags[index] = FILLED;
@@ -84,12 +84,12 @@ void addElement(SET *sp, char *elt)
 void removeElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
-    bool found;
+    bool found = false;
     int index = search(sp, elt, &found);
     if (found == true)
     {
-        sp->flags[index] = DELETED;
         free(sp->data[index]);
+        sp->flags[index] = DELETED;
         sp->count--;
     }
     return;
@@ -98,10 +98,10 @@ void removeElement(SET *sp, char *elt)
 char *findElement(SET *sp, char *elt)
 {
     assert(sp != NULL && elt != NULL);
-    bool found;
+    bool found = false;
     int index = search(sp, elt, &found);
     if(found == true)
-        return sp->data[index];
+        return (sp->data[index]);
     return NULL;
 
 }
@@ -110,11 +110,16 @@ char **getElements(SET *sp)
 {
     assert(sp != NULL);
     char ** copy = malloc(sizeof(char *)* sp->count);
-    int i;
     assert(copy != NULL);
+    int i, j;
+    j = 0;
     for(i = 0; i < sp->length; i++)
     {
-        strcpy(copy[i],sp->data[i]);
+        if(sp->flags[i] == FILLED)
+        {
+            memcpy(copy[j],sp->data[i], sizeof(char*)*sp->count);
+            j++;
+        }
     }
     return copy; 
 }
@@ -132,12 +137,14 @@ static int search(SET *sp, char *elt, bool *found)
     assert(sp != NULL);
     assert(elt != NULL);
     int i, pos;
-    int rem = 0;
-    int index = strhash(elt);
+    int rem;
+    int first = 0;
+    *found = false;
+    unsigned key = strhash(elt);
 
     for(i = 0; i < sp->length; i++)
     {
-        pos = (index + 1) % (sp->length);
+        pos = (key + 1) % (sp->length);
 
         if(sp->flags[pos] == FILLED)
         {
@@ -147,14 +154,15 @@ static int search(SET *sp, char *elt, bool *found)
                  return pos;
             }
         }
-        if(sp->flags[pos] == DELETED && rem == 0)
+        if(sp->flags[pos] == DELETED)
         {
             rem = pos;
+            first = 1;
         }
         if(sp->flags[pos] == EMPTY)
         {
             *found = false;
-            if(rem != 0)
+            if(first == 1)
                 return rem;
             return pos;
         }
