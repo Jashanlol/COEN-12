@@ -61,17 +61,53 @@ extern int numItems(LIST *lp)
     return (lp->count);
 }
 
-extern void addFirst(LIST *lp, void *item);
+extern void addFirst(LIST *lp, void *item)
+{
+    assert(lp != NULL && item != NULL);
+    NODE *temp = malloc(sizeof(NODE));
+    temp->data = item;
+    temp->prev = lp->head;
+    temp->next = lp->head->next;
+    lp->head->next = temp;
+    temp->next->prev = temp;
+    lp->count++;
+}
 
-extern void addLast(LIST *lp, void *item);
+extern void addLast(LIST *lp, void *item)
+{
+    assert(lp != NULL && item != NULL);
+    NODE *temp = malloc(sizeof(NODE));
+    temp->data = item; 
+    temp->next = lp->head;
+    temp->prev = lp->head->prev;
+    lp->head->prev = temp;
+    temp->prev->next = temp;
+    lp->count++;
+}
 
-extern void *removeFirst(LIST *lp);
+extern void *removeFirst(LIST *lp)
+{
+    assert(lp != NULL); 
+    NODE *pDel = lp->head;
+    
+}
 
-extern void *removeLast(LIST *lp);
+extern void *removeLast(LIST *lp)
+{
 
-extern void *getFirst(LIST *lp);
+}
 
-extern void *getLast(LIST *lp);
+extern void *getFirst(LIST *lp)
+{
+    assert(lp != NULL); 
+    return(lp->head->next->data);
+}
+
+extern void *getLast(LIST *lp)
+{
+    assert(lp != NULL); 
+    return(lp->head->prev->data);
+}
 
 extern void removeItem(LIST *lp, void *item);
 
