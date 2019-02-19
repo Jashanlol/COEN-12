@@ -6,13 +6,9 @@
 
 
 
-# include <time.h>		/* for time(), used to seed the rng */
 # include <stdio.h>
 # include <stdlib.h>
 # include <assert.h>
-# include <curses.h>
-# include <unistd.h>		/* for usleep() */
-# include <stdbool.h>
 # include "list.h"
 
 struct list{
@@ -26,7 +22,7 @@ typedef struct node{
      struct node *prev;
 } NODE;
 
-extern LIST *createlist(int (*compare) ())
+LIST *createList(int (*compare) ())
 {
 
     LIST *lp = malloc(sizeof(LIST));
@@ -40,7 +36,7 @@ extern LIST *createlist(int (*compare) ())
     return lp;
 }
 
-extern void destroyLIST(LIST *lp)
+void destroyList(LIST *lp)
 {
     assert(lp != NULL);
     NODE *pDel, *pNext;
@@ -55,13 +51,13 @@ extern void destroyLIST(LIST *lp)
 }
 
 
-extern int numItems(LIST *lp)
+int numItems(LIST *lp)
 {
     assert(lp != NULL);
     return (lp->count);
 }
 
-extern void addFirst(LIST *lp, void *item)
+void addFirst(LIST *lp, void *item)
 {
     assert(lp != NULL && item != NULL);
     NODE *temp = malloc(sizeof(NODE));
@@ -73,7 +69,7 @@ extern void addFirst(LIST *lp, void *item)
     lp->count++;
 }
 
-extern void addLast(LIST *lp, void *item)
+void addLast(LIST *lp, void *item)
 {
     assert(lp != NULL && item != NULL);
     NODE *temp = malloc(sizeof(NODE));
@@ -85,32 +81,84 @@ extern void addLast(LIST *lp, void *item)
     lp->count++;
 }
 
-extern void *removeFirst(LIST *lp)
+void *removeFirst(LIST *lp)
 {
     assert(lp != NULL); 
-    NODE *pDel = lp->head;
-    
+    NODE *pDel = lp->head->next;
+    void *first = pDel->data;
+    lp->head->next = pDel->next;
+    pDel->next->prev = lp->head;
+    free(pDel);
+    lp->count--;
+    return first; 
 }
 
-extern void *removeLast(LIST *lp)
+void *removeLast(LIST *lp)
 {
-
+    assert(lp != NULL); 
+    NODE *pDel = lp->head->prev;
+    void *last = pDel->data;
+    pDel->prev->next = lp->head;
+    lp->head->prev = pDel->prev;
+    free(pDel);
+    lp->count--;
+    return last; 
 }
 
-extern void *getFirst(LIST *lp)
+void *getFirst(LIST *lp)
 {
     assert(lp != NULL); 
     return(lp->head->next->data);
 }
 
-extern void *getLast(LIST *lp)
+void *getLast(LIST *lp)
 {
     assert(lp != NULL); 
     return(lp->head->prev->data);
 }
 
-extern void removeItem(LIST *lp, void *item);
+void removeItem(LIST *lp, void *item)
+{
+    assert(lp != NULL && item != NULL);
+    NODE *check = lp->head;
+    int i;
+    for(i = 0; i < lp->count; i++)
+    {
+        if(lp->compare(item, check->data) == 0)
+        {
+            check->next->prev = check->prev;
+            check->prev->next = check->next;
+            free(check);
+        }
+        check = check->next;
+    }
+    lp->count--;
+}
 
-extern void *findItem(LIST *lp, void *item);
+void *findItem(LIST *lp, void *item)
+{
+    assert(lp != NULL && item != NULL);
+    NODE *p = lp->head;
+    int i;
+    for(i = 0; i < lp->count; i++)
+    {
+        if(lp->compare(item, p->data) == 0)
+        {
+            return (p->data);
+        }
+    }
+    return NULL; 
+}
 
-extern void *getItems(LIST *lp);
+void *getItems(LIST *lp)
+{
+    void **copy = malloc(sizeof(void *)*lp->count);
+    NODE *p = lp->head->next;
+    int i;
+    for(i = 0; i < lp->count; i++)
+    {
+        copy[i] = p->data;
+        p = p->next;
+    }
+    return copy; 
+}
