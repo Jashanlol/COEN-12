@@ -2,15 +2,15 @@
 *   Spencer Goles   19 Febuary 2019   COEN 12
 *   Description:  
 *
-*
+*/
 
 # include <stdio.h>
 # include <stdlib.h>
 # include <assert.h>
 # include "set.h"
 # include "list.h" 
+# define  AVG 20
 
-int avg = 20;
 
 typedef struct node
 {
@@ -29,7 +29,7 @@ typedef struct set
     int length;
     int count;
     int (*compare)();
-    unsigned *hash;
+    unsigned (*hash)();
     LIST **lists; 
 } SET;
 
@@ -43,7 +43,7 @@ SET *createSet(int maxElts, int (*compare)(), unsigned (*hash)())
     sp->compare = compare;    
     sp->hash = hash;    
     sp->count = 0;   
-    sp->length =  maxElts / avg; 
+    sp->length =  maxElts / AVG; 
     sp->lists = malloc(sizeof(LIST*)*sp->length);
     for(i = 0; i < sp->length; i++)
         sp->lists[i] = createList(compare);
@@ -100,7 +100,6 @@ void *findElement(SET *sp, void *elt)
 void *getElements(SET *sp)
 {
     assert(sp != NULL);
-    int count = 0; 
     NODE *np;
     void **copy = malloc(sizeof(void*)*sp->count);
     int i, j;
@@ -122,4 +121,3 @@ void *getElements(SET *sp)
     }
     return copy; 
 }
-*/
