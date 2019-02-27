@@ -68,7 +68,7 @@ int numElements(SET *sp)
 
 void addElement(SET *sp, void *elt)
 {
-    assert(sp != NULL && elt != elt);
+    assert(sp != NULL && elt != NULL);
     int index = (*sp->hash)(elt) % sp->length;
     if(findItem(sp->lists[index],elt) == NULL)
     {
@@ -80,7 +80,7 @@ void addElement(SET *sp, void *elt)
 
 void removeElement(SET *sp, void *elt)
 {
-    assert(sp != NULL && elt != elt);
+    assert(sp != NULL && elt != NULL);
     int index = (*sp->hash)(elt) % sp->length;
     if(findItem(sp->lists[index],elt) == NULL)
     {
@@ -92,7 +92,7 @@ void removeElement(SET *sp, void *elt)
 
 void *findElement(SET *sp, void *elt)
 {
-    assert(sp != NULL && elt != elt);
+    assert(sp != NULL && elt != NULL);
     int index = (*sp->hash)(elt) % sp->length;
     return findItem(sp->lists[index], elt); 
 }
