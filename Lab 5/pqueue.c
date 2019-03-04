@@ -53,7 +53,42 @@ int numEntries(PQ *pq)
 void addEntry(PQ *pq, void *entry)
 {
     assert(pq != NULL && entry != NULL);
-    
+    if(pq->length == pq->count)
+    {
+        pq->data = realloc(pq->data, sizeof(*void)*pq->length*2);
+        pq->length *= 2;
+    }
+    pq->data[pq->count] = entry;
+    int loc = pq->count; 
+    while(pq->compare(pq->data[loc], pq->data[p(loc)]) < 0)
+    {
+        void *temp = pq->data[p(loc)];
+        pq->data[p(loc)] = pq->data[loc]; 
+        pq->data[loc] = temp; 
+    }
+    pq->count++;
 }
 
-void *removeEntry(PQ *pq);
+void *removeEntry(PQ *pq)
+{
+    assert(pq != NULL);
+    void *root = pq->data[0];
+    int loc, small; 
+    loc = 0;
+    small = 0; 
+    pq->data[loc] = pq->data[pq->count - 1];
+    pq->count--;
+    while(l(loc) < pq->count)
+    {
+        small = l(loc);
+        if(r(loc) < pq->count)
+        {
+            if(pq->compare(pq->data[l(loc)] , pq->data[r(loc)]) < 0)
+                small = l(loc); 
+            else 
+                small = r(loc); 
+        }
+        if(pq->compare())
+    } 
+
+}
