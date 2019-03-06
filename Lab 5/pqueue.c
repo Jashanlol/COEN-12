@@ -1,18 +1,22 @@
 /*
 *   Spencer Goles   COEN 12    27 Febuary 2019
-*   Description: 
+*   Description: This program is a priority queue 
 *
 */
+//Preprocessors
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include "pqueue.h"
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <assert.h>
-# include "pqueue.h"
-# define START 10
-# define p(x) (((x)-1)/2)
-# define l(x) ((2(x))+1)
-# define r(x) ((2(x))+2)
+//Defined constant and macros
+#define START 10
+#define p(x) (((x)-1)/2)
+#define l(x) (((x)*2)+1)
+#define r(x) (((x)*2)+2)
 
+//Struct acts as queue
 typedef struct pqueue 
 {
     int count;
@@ -21,6 +25,8 @@ typedef struct pqueue
     int (*compare) ();
 }PQ;
 
+//Function creates and initializes que
+//Big-O: O(1)
 PQ *createQueue(int (*compare)())
 {
     PQ *pq;
@@ -34,28 +40,31 @@ PQ *createQueue(int (*compare)())
     return pq;
 }
 
+//Function destroys queue by freeing from memory
+//Big-O: O(1)
 void destroyQueue(PQ *pq)
 {
     assert(pq != NULL);
-    int i;
-    for(i = 0; i < pq->count; i++)
-        free(pq->data[i]);
     free(pq->data);
     free(pq);
 }
 
+//Function returns the number of nodes
+//Big-O: O(1)
 int numEntries(PQ *pq)
 {
     assert(pq != NULL);
     return pq->count;
 }
 
+//Function adds a node to the priority queue and reallocates memory to 2x size if full to limit expensive reallocation
+//Big-O: O(log n)
 void addEntry(PQ *pq, void *entry)
 {
     assert(pq != NULL && entry != NULL);
     if(pq->length == pq->count)
     {
-        pq->data = realloc(pq->data, sizeof(*void)*pq->length*2);
+        pq->data = realloc(pq->data, sizeof(void *)*pq->length*2);
         pq->length *= 2;
     }
     pq->data[pq->count] = entry;
@@ -69,6 +78,8 @@ void addEntry(PQ *pq, void *entry)
     pq->count++;
 }
 
+//Function returns the deleted element and reorganizes queue as neccessary 
+//Big-O: O(log n)
 void *removeEntry(PQ *pq)
 {
     assert(pq != NULL);
@@ -88,7 +99,15 @@ void *removeEntry(PQ *pq)
             else 
                 small = r(loc); 
         }
-        if(pq->compare())
+        if(pq->compare(pq->data[small],pq->data[loc]) < 0)
+        {
+            void *temp = pq->data[small]; 
+            pq->data[small] = pq->data[loc];
+            pq->data[loc] = temp; 
+            loc = small; 
+        }
+        else
+            break;
     } 
-
+    return root; 
 }
