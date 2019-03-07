@@ -3,6 +3,7 @@
 *   Description: This program is a priority queue 
 *
 */
+
 //Preprocessors
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +17,6 @@
 #define l(x) (((x)*2)+1)
 #define r(x) (((x)*2)+2)
 
-//Struct acts as queue
 typedef struct pqueue 
 {
     int count;
