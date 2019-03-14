@@ -25,6 +25,12 @@
 # define FILLED  1
 # define DELETED 2
 
+void quicksort(void *arr[], int left, int right, int (*compare)());
+void *median(void *array[], int (*compare)() ,int left, int right);
+int partition(void *array[], int (*compare)() ,int left, int right);
+void swap(void *array[], int first, int second);
+
+
 struct set {
     int count;                  /* number of elements in array */
     int length;                 /* length of allocated array   */
@@ -221,4 +227,97 @@ void *findElement(SET *sp, void *elt)
 
     locn = search(sp, elt, &found);
     return found ? sp->data[locn] : NULL;
+}
+
+/************************************************************************
+*   Function Written By: Spencer Goles
+*
+*   Function:   getElements
+*
+*   Complexity: 
+*
+*   Description: 
+*/
+
+void *getElements(SET *sp)
+{
+    assert(sp != NULL);
+    int i, j;
+    void **elts = malloc(sizeof(void*)*sp->count);
+    assert(sp->data != NULL);
+    for(i = 0, j=0; i < sp->length; i++)
+    {
+        if(FILLED == sp->flags[i])
+        {
+            elts[j] = sp->data[i];
+            j++;
+        }
+    }
+    quicksort(elts, 0, j-1, sp->compare);
+    return elts; 
+}
+
+
+void quicksort(void *array[], int left, int right, int (*compare)())
+{
+    if(left < right)
+    {
+        int pivInd = partition(array, compare, left, right);
+        quicksort(array, left, pivInd, compare);
+        quicksort(array, pivInd + 1, right, compare);
+    }
+}
+int partition(void *array[], int (*compare)() ,int left, int right)
+{
+    void *piv = median(array, compare, left, right);
+    int low = left;
+    int high = right; 
+    while(low < high)
+    {
+        while(compare(array[low] ,piv) > 0)
+        {
+            low++;
+        }
+        while(compare(array[high], piv) < 0)
+        {
+            high--;
+        }
+        if(low <= high)
+        {
+            swap(array, low, high);
+            low++;
+            high--;
+        }
+    }
+    return low;
+}
+
+void *median(void *array[], int (*compare)() ,int left, int right)
+{
+    int midpoint = (right - left) /2;
+
+    if(compare(array[left], array[right]) < 0)
+    {
+        swap(array, left, right);
+    }
+
+    if(compare(array[left], array[midpoint]) < 0)
+    {
+        swap(array, left, midpoint);
+    }
+
+  if(compare(array[midpoint], array[right]) < 0){
+    swap(array, midpoint, right);
+  }
+
+
+  return array[midpoint];
+}
+
+void swap(void *array[], int first, int second)
+{
+    void *p = NULL;
+    array[first] = p;
+    array[first] = array[second];
+    array[second] = p;
 }

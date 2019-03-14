@@ -12,63 +12,36 @@
 #include <time.h>
 #include "dataset.h"
 
-int randomAge()
-{
-    int n = 12;
-    int limit;
-    int r;
-    limit = RAND_MAX - (RAND_MAX % n);
-    while((r = rand()) >= limit);
-    return (r % n) + 18;
-}
-
-int oneOrTwo()
-{
-    int n = 2;
-    int limit;
-    int r;
-    limit = RAND_MAX - (RAND_MAX % n);
-    while((r = rand()) >= limit);
-    return (r % n) + 1;
-}
-int randomID()
-{
-    int n = 2000;
-    int limit;
-    int r;
-    limit = RAND_MAX - (RAND_MAX % n);
-    while((r = rand()) >= limit);
-    return (r % n) + 1;
-}
 
 int main()
 {
+    srand(time(NULL));
+
     LIST *list;
     list = createDataSet();
 
-    int i, id; 
-    id = oneOrTwo();
+    int i, id, age, first; 
+    int prevID = 0;
     for(i = 0; i < 1000; i++)
     {
-        NODE *p;
-        p->id = id;
-        p->age = randomAge();
-        p->next = NULL;
-        p->prev = NULL;
-        insert(list, p);
-        id += 2;
+       first = (rand() % (2+1-1)+1);
+       id = prevID + first;
+       prevID = id;
+       age = (rand() % (30+1-18)+18);
+       insert(list, id, age);
+       printf("New Student - ID %d Age: %d", id, age);
+       
     }
 
-    NODE *student;
-    student->id = randomID();
-    student->age = randomAge();
-    student->next = NULL;
-    student->prev = NULL;
+    
+    //student->id = randomID();
+    //student->age = randomAge();
 
 
-    int found = searchID(list, student->id);
 
-    delete(list, student->id);
+    //int found = searchID(list, student->id);
+
+    //delete(list, student->id);
 
     maxAgeGap(list);
 

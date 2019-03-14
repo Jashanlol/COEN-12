@@ -1,7 +1,6 @@
 #ifndef DATASET_H
 #define DATASET_H
 
-//typedef struct node NODE;
 typedef struct list LIST;
 
 extern LIST *createDataSet();

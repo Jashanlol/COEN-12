@@ -28,6 +28,7 @@ struct list
 
 LIST *createDataSet()
 {
+    printf("Creating List");
     LIST *lp = malloc(sizeof(LIST));
     assert(lp != NULL);
     lp->count = 0;
@@ -49,6 +50,7 @@ void destroyDataSet(LIST *lp)
 		free(pDel);
 		pDel = pNext;
 	} while (pDel != lp->head);
+    printf("List Destroyed");
 	free(lp);
 }
 
@@ -65,6 +67,7 @@ int searchAge(LIST *lp, int age)
             printf("Search has been successful!\n");
             printf("Student ID: %d with age %d\n", p->id, p->age);
             found = 1;
+            break;
         }
         p = p->next;
     }
@@ -79,6 +82,7 @@ int searchAge(LIST *lp, int age)
 
 int searchID(LIST *lp, int id)
 {
+    printf("\nSearching for ID\n");
     assert(lp != NULL);
     NODE *p = lp->head->next;
     int i;
@@ -86,19 +90,22 @@ int searchID(LIST *lp, int id)
     {
         if(p->id == id)
         {
-            printf("Search has been successful!\n");
-            printf("Student ID: %d  Age: %d\n", p->id, p->age);
+            printf("\nSearch has been successful!\n");
+            printf("\nStudent ID: %d  Age: %d\n", p->id, p->age);
             return 1;
         }
         p = p->next;
     }
-    printf("\nNo students with id %d found", id);
+    printf("\nNo students with id %d found\n", id);
     return -1;
 }
 
-void insert(LIST *lp, NODE *p)
+void insert(LIST *lp, int id, int age)
 {
-    assert(lp != NULL && p != NULL);
+    assert(lp != NULL);
+    NODE *p;
+    p->id = id;
+    p->age = age; 
     NODE *h = lp->head->next;
     while(h != NULL)
     {
@@ -109,6 +116,8 @@ void insert(LIST *lp, NODE *p)
             h->prev = p;
             h->prev->next = p;
             lp->count++;
+            printf("Student Added.");
+            return;
         }
         h = h->next;
     }
@@ -127,9 +136,12 @@ void delete(LIST *lp, int id)
             p->prev->next = p->next; 
             free(p);
             lp->count--;
+            printf("Student Deleted.");
+            return;
         }
         p = p->next;
     }
+    printf("Student Not Found.");
 }
 
 void maxAgeGap(LIST *lp)
@@ -141,9 +153,9 @@ void maxAgeGap(LIST *lp)
         int maxAge = lp->head->prev->age;
         int gap = maxAge - minAge;
         printf("\nMax Age Gap: %d\n", gap);
+        return;
     }
     printf("\nNot enough students to calculate gap.\n");
-    return;
 }
 
 
