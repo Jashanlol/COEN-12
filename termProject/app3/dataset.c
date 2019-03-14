@@ -16,8 +16,8 @@ typedef struct node
 {
     int id;
     int age; 
-    NODE *next; 
-    NODE *prev;
+    struct node *next; 
+    struct node *prev;
 } NODE;
 
 struct list
@@ -116,7 +116,7 @@ void insert(LIST *lp, int id, int age)
             h->prev = p;
             h->prev->next = p;
             lp->count++;
-            printf("Student Added.");
+            printf("Student Added ID: %d Age: %d", id, age);
             return;
         }
         h = h->next;

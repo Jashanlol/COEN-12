@@ -33,15 +33,11 @@ int main()
        
     }
 
-    
-    //student->id = randomID();
-    //student->age = randomAge();
+    int pID = (rand() % (2000+1-1)+1);
 
+    int found = searchID(list, pID);
 
-
-    //int found = searchID(list, student->id);
-
-    //delete(list, student->id);
+    delete(list, pID);
 
     maxAgeGap(list);
 
@@ -49,3 +45,4 @@ int main()
 
     return 1;
 }
+
