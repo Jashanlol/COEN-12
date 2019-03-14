@@ -10,22 +10,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include "dataset.h"
 
-typedef struct node NODE;
-
-struct node
+typedef struct node
 {
     int id;
     int age; 
     NODE *next; 
     NODE *prev;
-};
+} NODE;
 
-typedef struct list
+struct list
 {
     int count; 
     NODE *head;
-} LIST;
+};
 
 LIST *createDataSet()
 {

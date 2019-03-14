@@ -9,9 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "dataset.c"
-
-
+#include <time.h>
+#include "dataset.h"
 
 int randomAge()
 {
