@@ -15,15 +15,16 @@
 
 int main()
 {
+    //Seeds srand for random values
     srand(time(NULL));
 
     LIST *list;
     list = createDataSet();
 
-    printf("\none\n");
     int i, id, age, first; 
     int prevID = 0;
 
+    //Loop creates 1000 random students
     for(i = 0; i < 1000; i++)
     {
        first = (rand() % (2+1-1)+1);
@@ -34,25 +35,16 @@ int main()
        printf("\nNew Student - ID %d Age: %d", id, age);
     }
 
-    printf("two\n");
-
+    //Generates random ID to find and delete
     int pID = (rand() % (2000+1-1)+1);
 
     searchID(list, pID);
 
-    printf("three\n");
-
     delete(list, pID);
-
-    printf("four\n");
 
     maxAgeGap(list);
 
-    printf("five\n");
-
     destroyDataSet(list);
-
-    printf("done\n");
 
     return 1;
 }

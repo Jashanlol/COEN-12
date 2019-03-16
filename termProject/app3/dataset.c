@@ -26,6 +26,7 @@ struct list
     NODE *head;
 };
 
+//Function creates circualar list with sentinal node
 LIST *createDataSet()
 {
     printf("\nCreating List\n");
@@ -39,6 +40,7 @@ LIST *createDataSet()
 	return lp;
 }
 
+//Function deletes each node then the whole list
 void destroyDataSet(LIST *lp)
 {
     assert(lp != NULL);
@@ -54,6 +56,7 @@ void destroyDataSet(LIST *lp)
 	free(lp);
 }
 
+//Search age goes through each node to find student
 void searchAge(LIST *lp, int age)
 {
     assert(lp != NULL);
@@ -80,6 +83,7 @@ void searchAge(LIST *lp, int age)
     return;
 }
 
+//Search ID goes through each node to find student
 void searchID(LIST *lp, int id)
 {
     printf("\nSearching for ID\n");
@@ -96,9 +100,10 @@ void searchID(LIST *lp, int id)
         }
         p = p->next;
     }
-    printf("\nNo students with id %d found\n", id);
+    printf("\nNo students with ID: %d found\n", id);
 }
 
+//Function inserts a new student into sorted list
 void insert(LIST *lp, int id, int age)
 {
     assert(lp != NULL);
@@ -134,6 +139,7 @@ void insert(LIST *lp, int id, int age)
     }
 }
 
+//Function finds a student and deletes them from the list
 void delete(LIST *lp, int id)
 {
     assert(lp != NULL);
@@ -152,9 +158,10 @@ void delete(LIST *lp, int id)
         }
         p = p->next;
     }
-    printf("\nStudent Not Found.\n");
+    printf("\nStudent Not Deleted.\n");
 }
 
+//Function finds the largest gap between the oldest and youngest student
 void maxAgeGap(LIST *lp)
 {
     assert(lp != NULL);

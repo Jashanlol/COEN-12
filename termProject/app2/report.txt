@@ -1,0 +1,24 @@
+App 2
+---------------------------------------------------
+
+The data structure used in this program was an 
+array. This was chosen becasue the student max 
+was 3000 with each having to contain a unique id.
+Therefore, if each students info was placed at 
+the array index corresponding to their id the 
+Complexity of many of the functions would be 
+O(1) improving performance. 
+
+---------------------------------------------------
+
+Algorithmic Complexity:
+
+createDataSet: O(n)
+
+deleteDataSet: O(1)
+
+searchID: O(1)
+
+insert: O(1)
+
+delete: O(1)

@@ -1,0 +1,26 @@
+App 3
+---------------------------------------------------
+
+For this app a circluar sorted doubly linked list
+is employed to hold all the students and their 
+information. This solution allows for a 
+maxAgeGap of O(1) given that was important 
+functionality to have. 
+
+---------------------------------------------------
+
+Algorithmic Complexity:
+
+createDataSet: O(1)
+
+destroyDataSet: O(n)
+
+searchAge: O(n)
+
+searchID: O(n)
+
+insert: O(n)
+
+delete: O(n)
+
+maxAgeGap: O(1)
